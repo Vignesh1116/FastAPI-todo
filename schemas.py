@@ -10,6 +10,6 @@ class TodoCreate(TodoBase):
 
 class Todo(TodoBase):
     id:int
-    class config:
-        orm_mode = True
+    class Config:
+        from_attributes = True
 
