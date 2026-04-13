@@ -1,4 +1,4 @@
-from fastapi import FastAPI,Depends
+from fastapi import FastAPI,Depends,HTTPException
 from schemas import Todo as TodoSchema, TodoCreate
 from sqlalchemy.orm import Session
 from database import sessionLocal, engine
@@ -32,3 +32,13 @@ def create(todo:TodoCreate,db: Session = Depends(get_db)):
 @app.get("/todos",response_model=list[TodoSchema])
 def read_todos(db:Session = Depends(get_db)):
     return db.query(Todo).all()
+
+#get - single Todo
+@app.get("/todos/{todo_id}",response_model=TodoSchema)
+def read_todo(todo_id:int,db:Session = Depends(get_db)):
+    todo = db.query(Todo).filter(Todo.id == todo_id).first()
+    if todo is None:
+        raise HTTPException(status_code=404, detail="Todo not found")
+    return todo
+
+
