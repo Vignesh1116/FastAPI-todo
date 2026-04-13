@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from database import sessionLocal, engine
 from models import Todo
 
+
 app = FastAPI()
 
 # Create DB Tables
@@ -26,3 +27,8 @@ def create(todo:TodoCreate,db: Session = Depends(get_db)):
     db.commit()
     db.refresh(db_todo)
     return db_todo
+
+#get - all Todos
+@app.get("/todos",response_model=list[TodoSchema])
+def read_todos(db:Session = Depends(get_db)):
+    return db.query(Todo).all()
